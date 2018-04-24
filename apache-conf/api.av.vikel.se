@@ -1,0 +1,25 @@
+<VirtualHost *:80>
+
+    ServerName api.av.vikel.se
+
+    ErrorLog /var/log/apache2/api.av.vikel.se-error.log
+    CustomLog /var/log/apache2/api.av.vikel.se-access.log combined
+
+    WSGIDaemonProcess apiavvikelse user=www-data group=www-data processes=1 threads=5
+    WSGIScriptAlias / /opt/avvikelse-api/app/app.wsgi
+
+    Header set Access-Control-Allow-Origin *
+
+    <Directory /opt/avvikelse-api/app/app>
+        WSGIProcessGroup apiavvikelse
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    Alias /static /opt/avvikelse-api/static
+    <Location "/static">
+        SetHandler None
+    </Location>
+
+</VirtualHost>
